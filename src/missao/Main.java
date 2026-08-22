@@ -163,18 +163,24 @@ public class Main {
     }
 
     private static Missao criarNovaMissao(Random random, int minX, int maxX, int minY, int maxY) {
-        Nave nave = new Nave("A-1", 3);
+        int cargaPassageiros = 4;
+        Nave nave = new Nave("A-1", cargaPassageiros);
         Missao missao = new Missao(nave);
 
-        while (missao.getPassageiros().size() < 3) {
+        while (missao.getPassageiros().size() < cargaPassageiros) {
             int x = random.nextInt(maxX - minX + 1) + minX;
             int y = random.nextInt(maxY - minY + 1) + minY;
             if (x == nave.getX() && y == nave.getY()) continue;
             if (posicaoOcupada(missao, x, y)) continue;
-            if (missao.getPassageiros().isEmpty()) {
-                missao.addPassageiro(new Professor("Dr. Silva", x, y));
-            } else if (missao.getPassageiros().size() == 1) {
+
+
+            int qtdAtual = missao.getPassageiros().size();
+            if (qtdAtual == 0) {
+                missao.addPassageiro(new Professor("DR. Silva", x, y));
+            } else if (qtdAtual == 1) {
                 missao.addPassageiro(new Engenheiro("Eng. Rosa", x, y));
+            } else if (qtdAtual == 2) {
+                missao.addPassageiro(new Astronauta("Astro. Marcos",x, y));
             } else {
                 missao.addPassageiro(new Professor("Dr. Lima", x, y));
             }
@@ -223,13 +229,10 @@ public class Main {
                 if (missao.getNave().getX() == x && missao.getNave().getY() == y) {
                     symbol = 'N';
                 } else {
+                    // LOOP CORRIGIDO: Apenas uma iteração limpa e polimórfica
                     for (Passageiro p : missao.getPassageiros()) {
                         if (p.getX() == x && p.getY() == y) {
-                            if (p instanceof Engenheiro) {
-                                symbol = 'E';
-                            } else {
-                                symbol = 'P';
-                            }
+                            symbol = p.getSimbolo();
                             break;
                         }
                     }
@@ -247,7 +250,7 @@ public class Main {
             System.out.println();
         }
 
-        System.out.println("Legenda: N=Nave, P=Professor, E=Engenheiro, A=Asteroide, .=Vazio");
+        System.out.println("Legenda: N=Nave, P=Professor, E=Engenheiro, A=Astronauta, *=Asteroide, .=Vazio");
         System.out.println("Resumo de comandos: w(cima)/s(baixo)/a(esquerda)/d(direita) mover, c embarcar, q sair");
         System.out.println("Passageiros restantes:");
         for (Passageiro p : missao.getPassageiros()) {

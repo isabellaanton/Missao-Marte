@@ -1,6 +1,6 @@
 package missao;
 
-public class Passageiro {
+public abstract class Passageiro {
     private String nome;
     private String tipo;
     private int x;
@@ -17,4 +17,8 @@ public class Passageiro {
     public String getTipo() { return tipo; }
     public int getX() { return x; }
     public int getY() { return y; }
+
+    public abstract int getPontuacao();
+
+    public abstract char getSimbolo();
 }
