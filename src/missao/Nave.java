@@ -8,6 +8,7 @@ public class Nave {
     private int x;
     private int y;
     private int capacidade;
+    private int vidas = 3;
     private List<Passageiro> passageiros = new ArrayList<>();
 
     public Nave(String id, int capacidade) {
@@ -34,5 +35,20 @@ public class Nave {
             return true;
         }
         return false;
+    }
+    // Retorna quantas vidas a nave tem
+    public int getVidas() {
+        return vidas;
+    }
+
+    // Tira uma vida quando bate no asteroide
+    public void perderVida() {
+        this.vidas--;
+    }
+
+    // Volta pro começo para não bater de novo no mesmo lugar
+    public void resetPosicao() {
+        this.x = 0;
+        this.y = 0;
     }
 }
