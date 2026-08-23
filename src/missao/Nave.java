@@ -36,17 +36,14 @@ public class Nave {
         }
         return false;
     }
-    // Retorna quantas vidas a nave tem
     public int getVidas() {
         return vidas;
     }
 
-    // Tira uma vida quando bate no asteroide
     public void perderVida() {
         this.vidas--;
     }
 
-    // Volta pro começo para não bater de novo no mesmo lugar
     public void resetPosicao() {
         this.x = 0;
         this.y = 0;

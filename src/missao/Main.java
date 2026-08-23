@@ -15,15 +15,27 @@ import java.util.stream.Collectors;
 public class Main {
     public static void main(String[] args) {
         Random random = new Random();
-        int minX = -5;
-        int maxX = 5;
-        int minY = -5;
-        int maxY = 5;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Digite a dimensão do mapa (ex: 5 para o tamanho padrão): ");
+        int dimensao = 5;
+        try {
+            String inputDimensao = scanner.nextLine().trim();
+            if (!inputDimensao.isEmpty()) {
+                dimensao = Integer.parseInt(inputDimensao);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Valor inválido. Usando dimensão padrão: 5");
+        }
+
+        int minX = -dimensao;
+        int maxX = dimensao;
+        int minY = -dimensao;
+        int maxY = dimensao;
 
         Path rankingPath = Paths.get("ranking.json");
         List<RankingEntry> ranking = loadRanking(rankingPath);
 
-        Scanner scanner = new Scanner(System.in);
+
         System.out.print("Digite o nome do piloto: ");
         String pilotoNome = scanner.nextLine().trim();
         if (pilotoNome.isEmpty()) {
@@ -75,13 +87,19 @@ public class Main {
             boolean running = true;
 
             while (running) {
-                desenharMapa(missao, -5, 5, -5, 5, score, pilotoNome);
-                System.out.printf("Nave em (%d,%d) | Pontos: %d | Passageiros a bordo: %d | Passageiros restantes: %d\n",
-                        nave.getX(), nave.getY(), score, nave.getPassageiros().size(), missao.todosEmbarcados() ? 0 : missao.getPassageiros().size());
+                desenharMapa(missao, minX, maxX, minY, maxY, score, pilotoNome);
+                System.out.printf("Nave em (%d,%d) | Vidas: %d | Pontos: %d | Passageiros a bordo: %d | Passageiros restantes: %d\n",
+                        nave.getX(), nave.getY(), nave.getVidas(), score, nave.getPassageiros().size(), missao.todosEmbarcados() ? 0 : missao.getPassageiros().size());
 
                 if (missao.verificaColisao()) {
-                    System.out.println("Colisão com asteroide! Missão abortada.");
-                    break;
+                    nave.perderVida();
+                    if (nave.getVidas() > 0) {
+                        System.out.printf("Colisão com asteroide! Você perdeu uma vida. Vidas restantes: %d\n", nave.getVidas());
+                        nave.resetPosicao();
+                    } else {
+                        System.out.println("Colisão com asteroide! Sem vidas restantes. Missão abortada.");
+                        break;
+                    }
                 }
 
                 System.out.print("Para onde ir? ");
@@ -229,7 +247,6 @@ public class Main {
                 if (missao.getNave().getX() == x && missao.getNave().getY() == y) {
                     symbol = 'N';
                 } else {
-                    // LOOP CORRIGIDO: Apenas uma iteração limpa e polimórfica
                     for (Passageiro p : missao.getPassageiros()) {
                         if (p.getX() == x && p.getY() == y) {
                             symbol = p.getSimbolo();
