@@ -91,6 +91,10 @@ public class Main {
                 System.out.printf("Nave em (%d,%d) | Vidas: %d | Pontos: %d | Passageiros a bordo: %d | Passageiros restantes: %d\n",
                         nave.getX(), nave.getY(), nave.getVidas(), score, nave.getPassageiros().size(), missao.todosEmbarcados() ? 0 : missao.getPassageiros().size());
 
+                for (Inimigo inimigo : missao.getInimigo()) {
+                    inimigo.moverAleatoriamente(minX, maxX, minY, maxY);
+                }
+
                 if (missao.verificaColisao()) {
                     nave.perderVida();
                     if (nave.getVidas() > 0) {
@@ -180,6 +184,8 @@ public class Main {
         }
     }
 
+
+
     private static Missao criarNovaMissao(Random random, int minX, int maxX, int minY, int maxY) {
         int cargaPassageiros = 4;
         Nave nave = new Nave("A-1", cargaPassageiros);
@@ -212,6 +218,15 @@ public class Main {
             missao.addAsteroide(new Asteroide(x, y));
         }
 
+        while (missao.getInimigo().size() < 2) {
+            int x = random.nextInt(maxX - minX +1) + minX;
+            int y = random.nextInt(maxY - minY +1) + minY;
+            if (x == nave.getX() && y == nave.getY()) continue;
+            if (posicaoOcupada(missao, x, y)) continue;
+            missao.addInimigo(new Inimigo(x, y));
+
+        }
+
         return missao;
     }
 
@@ -222,6 +237,10 @@ public class Main {
         }
         for (Asteroide a : missao.getAsteroides()) {
             if (a.getX() == x && a.getY() == y) return true;
+        }
+
+        for (Inimigo i : missao.getInimigo()) {
+            if (i.getX() == x && i.getY() == y) return true;
         }
         return false;
     }
@@ -257,6 +276,14 @@ public class Main {
                         for (Asteroide a : missao.getAsteroides()) {
                             if (a.getX() == x && a.getY() == y) {
                                 symbol = 'A';
+                                break;
+                            }
+                        }
+                    }
+                    if (symbol == '.') {
+                        for (Inimigo i : missao.getInimigo()) {
+                            if (i.getX() == x && i.getY() == y) {
+                                symbol = 'I';
                                 break;
                             }
                         }
