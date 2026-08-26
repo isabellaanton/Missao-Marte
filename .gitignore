@@ -1,1 +1,21 @@
+# Compilação Java e artefatos gerados
+*.class
+bin/
+out/
+build/
+*.jar
 
+# Arquivos de configuração de IDEs (VS Code, IntelliJ, Eclipse)
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Arquivo local de ranking temporário
+ranking.json
