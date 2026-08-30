@@ -5,7 +5,7 @@
 - **Isabella** (Matrícula: 2516267)
 
 ## Repositório
-[Insira o Link para o repositório Git da Equipe aqui]
+[(https://github.com/isabellaanton/Missao-Marte.git)]
 
 ## Sobre o Projeto
 Este projeto é uma extensão do jogo em console "Missão Marte Unifor", desenvolvido para a disciplina de Projeto e Arquitetura de Sistemas da UNIFOR. O objetivo é aplicar conceitos avançados de Programação Orientada a Objetos (POO), tais como Herança, Polimorfismo, Encapsulamento, Composição e a persistência de dados em arquivos JSON.
