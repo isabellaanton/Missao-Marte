@@ -1,74 +1,51 @@
-package exercicio10.model;
+﻿package exercicio10.model;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
-public class Missao {
-    private Nave nave;
-    private List<Passageiro> passageiros = new ArrayList<>();
-    private List<Asteroide> asteroides = new ArrayList<>();
-    private List<Inimigo> inimigos = new ArrayList<>();
+public final class Missao {
+    private final Nave nave;
+    private final List<Passageiro> passageiros = new ArrayList<Passageiro>();
+    private final List<Asteroide> asteroides = new ArrayList<Asteroide>();
+    private final List<Inimigo> inimigos = new ArrayList<Inimigo>();
 
-    public Missao(Nave nave) {
-        this.nave = nave;
-    }
+    public Missao(Nave nave) { this.nave = nave; }
+    public Nave getNave() { return nave; }
+    public List<Passageiro> getPassageiros() { return Collections.unmodifiableList(passageiros); }
+    public List<Asteroide> getAsteroides() { return Collections.unmodifiableList(asteroides); }
+    public List<Inimigo> getInimigos() { return Collections.unmodifiableList(inimigos); }
+    public void adicionarPassageiro(Passageiro passageiro) { passageiros.add(passageiro); }
+    public void adicionarAsteroide(Asteroide asteroide) { asteroides.add(asteroide); }
+    public void adicionarInimigo(Inimigo inimigo) { inimigos.add(inimigo); }
 
-    public Nave getNave() {
-        return nave;
-    }
-
-    public List<Passageiro> getPassageiros() {
-        return passageiros;
-    }
-
-    public List<Asteroide> getAsteroides() {
-        return asteroides;
-    }
-
-    public List<Inimigo> getInimigos() {
-        return inimigos;
-    }
-
-    public void addPassageiro(Passageiro p) { passageiros.add(p); }
-    public void addAsteroide(Asteroide a) { asteroides.add(a); }
-    public void addInimigo(Inimigo i) { inimigos.add(i); }
-
-    public boolean verificaColisao() {
-        for (Asteroide a : asteroides) {
-            if (a.colideCom(nave)) return true;
-        }
-        for (Inimigo i : inimigos) {
-            if (i.colideCom(nave)) return true;
-        }
-        return false;
-    }
-
-    public void moverInimigos(java.util.Random random, int minX, int maxX, int minY, int maxY) {
-        for (Inimigo i : inimigos) {
-            i.mover(random, minX, maxX, minY, maxY);
-        }
-    }
-
-    public Passageiro passagemNaPosicao() {
-        for (Passageiro p : passageiros) {
-            if (p.getX() == nave.getX() && p.getY() == nave.getY()) return p;
-        }
+    public Passageiro getPassageiroNaPosicaoDaNave() {
+        for (Passageiro passageiro : passageiros) if (mesmaPosicao(passageiro, nave)) return passageiro;
         return null;
     }
-
     public boolean embarcarPassageiroNaPosicao() {
-        Iterator<Passageiro> it = passageiros.iterator();
-        while (it.hasNext()) {
-            Passageiro p = it.next();
-            if (p.getX() == nave.getX() && p.getY() == nave.getY()) {
-                boolean ok = nave.embarcar(p);
-                if (ok) it.remove();
-                return ok;
-            }
-        }
+        Passageiro passageiro = getPassageiroNaPosicaoDaNave();
+        if (passageiro == null || !nave.embarcar(passageiro)) return false;
+        passageiros.remove(passageiro);
+        return true;
+    }
+    public boolean verificaColisao() {
+        for (Asteroide asteroide : asteroides) if (mesmaPosicao(asteroide, nave)) return true;
+        for (Inimigo inimigo : inimigos) if (mesmaPosicao(inimigo, nave)) return true;
         return false;
     }
-
+    public void moverInimigos(Random random, int min, int max) {
+        for (Inimigo inimigo : inimigos) {
+            int dx = random.nextInt(3) - 1;
+            int dy = random.nextInt(3) - 1;
+            if (inimigo.getX() + dx >= min && inimigo.getX() + dx <= max
+                    && inimigo.getY() + dy >= min && inimigo.getY() + dy <= max) inimigo.mover(dx, dy);
+        }
+    }
     public boolean todosEmbarcados() { return passageiros.isEmpty(); }
+    private boolean mesmaPosicao(Posicionavel primeira, Posicionavel segunda) {
+        return primeira.getX() == segunda.getX() && primeira.getY() == segunda.getY();
+    }
 }
+

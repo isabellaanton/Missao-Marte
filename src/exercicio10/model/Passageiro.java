@@ -1,24 +1,17 @@
-package exercicio10.model;
+﻿package exercicio10.model;
 
-public class Passageiro {
-    private String nome;
-    private String tipo;
-    private int x;
-    private int y;
+public abstract class Passageiro extends EntidadeMapa {
+    private final String nome;
+    private final String tipo;
 
-    public Passageiro(String nome, String tipo, int x, int y) {
+    protected Passageiro(String nome, String tipo, int x, int y) {
+        super(x, y);
         this.nome = nome;
         this.tipo = tipo;
-        this.x = x;
-        this.y = y;
     }
 
     public String getNome() { return nome; }
     public String getTipo() { return tipo; }
-    public int getX() { return x; }
-    public int getY() { return y; }
-
-    public int getPontuacao() {
-        return 10;  // Default
-    }
+    public abstract int getPontuacao();
 }
+

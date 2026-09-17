@@ -1,57 +1,47 @@
-package exercicio10.model;
+﻿package exercicio10.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class Nave {
-    private String id;
-    private int x;
-    private int y;
-    private int capacidade;
-    private int vidas;
-    private List<Passageiro> passageiros = new ArrayList<>();
+public final class Nave extends EntidadeMapa implements Movel {
+    private final String nome;
+    private final int capacidade;
+    private final List<Passageiro> passageiros = new ArrayList<Passageiro>();
+    private int vidas = 3;
 
-    public Nave(String id, int capacidade) {
-        this.id = id;
+    public Nave(String nome, int x, int y, int capacidade) {
+        super(x, y);
+        this.nome = nome;
         this.capacidade = capacidade;
-        this.vidas = 3;  // Inicia com 3 vidas
-        this.x = 0;
-        this.y = 0;
     }
 
-    public String getId() { return id; }
-    public int getX() { return x; }
-    public int getY() { return y; }
+    public String getNome() { return nome; }
     public int getCapacidade() { return capacidade; }
     public int getVidas() { return vidas; }
-    public List<Passageiro> getPassageiros() { return passageiros; }
-
-    public void moveUp() { y--; }
-    public void moveDown() { y++; }
-    public void moveLeft() { x--; }
-    public void moveRight() { x++; }
-
-    // Versão com limites para evitar sair do mapa
-    public void moverComLimites(char direcao, int minX, int maxX, int minY, int maxY) {
-        switch (direcao) {
-            case 'w': if (y > minY) y--; break;
-            case 's': if (y < maxY) y++; break;
-            case 'a': if (x > minX) x--; break;
-            case 'd': if (x < maxX) x++; break;
-        }
+    public List<Passageiro> getPassageiros() { return Collections.unmodifiableList(passageiros); }
+    public boolean embarcar(Passageiro passageiro) {
+        if (passageiro == null || passageiros.size() >= capacidade) return false;
+        passageiros.add(passageiro);
+        return true;
     }
+    public void perderVida() { vidas = Math.max(0, vidas - 1); }
+    @Override public void mover(int dx, int dy) { x += dx; y += dy; }
+    @Override public char getSimbolo() { return '@'; }
 
-    public boolean embarcar(Passageiro p) {
-        if (passageiros.size() < capacidade) {
-            passageiros.add(p);
-            return true;
+    public boolean moverComLimites(char comando, int min, int max) {
+        int dx = 0;
+        int dy = 0;
+        switch (Character.toLowerCase(comando)) {
+            case 'w': dy = 1; break;
+            case 's': dy = -1; break;
+            case 'a': dx = -1; break;
+            case 'd': dx = 1; break;
+            default: return false;
         }
-        return false;
-    }
-
-    public void perderVida() {
-        if (vidas > 0) {
-            vidas--;
-        }
+        if (x + dx < min || x + dx > max || y + dy < min || y + dy > max) return false;
+        mover(dx, dy);
+        return true;
     }
 }
+

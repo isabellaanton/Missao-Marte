@@ -1,18 +1,7 @@
-package exercicio10.model;
+﻿package exercicio10.model;
 
-public class Asteroide {
-    private int x;
-    private int y;
-
-    public Asteroide(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public int getX() { return x; }
-    public int getY() { return y; }
-
-    public boolean colideCom(Nave n) {
-        return n.getX() == x && n.getY() == y;
-    }
+public final class Asteroide extends EntidadeMapa {
+    public Asteroide(int x, int y) { super(x, y); }
+    @Override public char getSimbolo() { return '#'; }
 }
+
