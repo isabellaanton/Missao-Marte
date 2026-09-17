@@ -114,7 +114,7 @@ public class Main {
 
             String direcaoInput = lerLinha(scanner, "Comando (w/s/a/d/c/q): ", "").toLowerCase();
             if (direcaoInput.isEmpty()) continue;
-
+//teste
             char cmd = direcaoInput.charAt(0);
             if (cmd == 'q') {
                 System.out.println("Missão abortada pelo piloto.");
