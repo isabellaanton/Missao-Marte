@@ -1,10 +1,10 @@
-package solidexercicio10.repository;
+package exercicio10.repository;
 
+import exercicio10.model.RankingEntry;
 import java.util.List;
-import solidexercicio10.model.Dificuldade;
 
 public interface RankingRepository {
-    void salvar(String nome, int pontos, Dificuldade dificuldade, int passageiros, long tempoSegundos);
-    List<RankingEntry> listar();
-    void limpar();
+    List<RankingEntry> carregar();
+    void salvar(List<RankingEntry> ranking);
+    void resetar();
 }

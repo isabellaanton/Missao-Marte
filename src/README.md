@@ -139,9 +139,9 @@ Crie o arquivo Main.java com o conteúdo abaixo:
 package solidexercicio10;
 
 import java.util.Scanner;
+
 import solidexercicio10.repository.RankingRepository;
 import solidexercicio10.repository.RankingService;
-import solidexercicio10.service.JogoService;
 
 public class Main {
     public static void main(String[] args) {
@@ -183,6 +183,7 @@ package solidexercicio10.service;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+
 import solidexercicio10.model.Asteroide;
 import solidexercicio10.model.Dificuldade;
 import solidexercicio10.model.Engenheiro;
@@ -192,7 +193,6 @@ import solidexercicio10.model.Nave;
 import solidexercicio10.model.Passageiro;
 import solidexercicio10.model.Professor;
 import solidexercicio10.presentation.MapaRenderer;
-import solidexercicio10.repository.RankingEntry;
 import solidexercicio10.repository.RankingRepository;
 
 public class JogoService {
@@ -274,10 +274,10 @@ public class JogoService {
 
         while (partidaAtiva) {
             mapaRenderer.desenhar(missao, score, pilotoNome, minX, maxX, minY, maxY);
-                int passageirosABordo = nave.getPassageiros().size();
-                int passageirosRestantes = missao.getPassageiros().size();
-                int totalPassageiros = passageirosABordo + passageirosRestantes;
-                System.out.printf("Nave em (%d,%d) | Pontos: %d | Vidas: %d | A bordo: %d/%d | Restantes no mapa: %d | Total: %d%n",
+            int passageirosABordo = nave.getPassageiros().size();
+            int passageirosRestantes = missao.getPassageiros().size();
+            int totalPassageiros = passageirosABordo + passageirosRestantes;
+            System.out.printf("Nave em (%d,%d) | Pontos: %d | Vidas: %d | A bordo: %d/%d | Restantes no mapa: %d | Total: %d%n",
                     nave.getX(), nave.getY(), score, nave.getVidas(), passageirosABordo,
                     nave.getCapacidade(), passageirosRestantes, totalPassageiros);
 
@@ -399,14 +399,14 @@ public class JogoService {
             int[] posicao = sortearPosicaoLivre(missao, minX, maxX, minY, maxY, nave);
             int x = posicao[0];
             int y = posicao[1];
-                if (indice % 3 == 0) {
-                    missao.adicionarPassageiro(new Professor("Dr. Silva", x, y));
-                } else if (indice % 3 == 1) {
-                    missao.adicionarPassageiro(new Engenheiro("Eng. Rosa", x, y));
-                } else {
-                    missao.adicionarPassageiro(new Professor("Dr. Lima", x, y));
-                }
-                indice++;
+            if (indice % 3 == 0) {
+                missao.adicionarPassageiro(new Professor("Dr. Silva", x, y));
+            } else if (indice % 3 == 1) {
+                missao.adicionarPassageiro(new Engenheiro("Eng. Rosa", x, y));
+            } else {
+                missao.adicionarPassageiro(new Professor("Dr. Lima", x, y));
+            }
+            indice++;
         }
 
         if (missao.getPassageiros().size() < qtdPassageiros) {
@@ -419,12 +419,12 @@ public class JogoService {
         int total = asteroide ? missao.getAsteroides().size() : missao.getInimigos().size();
         while (total < qtd) {
             int[] posicao = sortearPosicaoLivre(missao, minX, maxX, minY, maxY, nave);
-                if (asteroide) {
-                    missao.adicionarAsteroide(new Asteroide(posicao[0], posicao[1]));
-                } else {
-                    missao.adicionarInimigo(new Inimigo(posicao[0], posicao[1]));
-                }
-                total++;
+            if (asteroide) {
+                missao.adicionarAsteroide(new Asteroide(posicao[0], posicao[1]));
+            } else {
+                missao.adicionarInimigo(new Inimigo(posicao[0], posicao[1]));
+            }
+            total++;
         }
     }
 
@@ -434,7 +434,7 @@ public class JogoService {
             int x = random.nextInt(maxX - minX + 1) + minX;
             int y = random.nextInt(maxY - minY + 1) + minY;
             if (!posicaoOcupada(missao, x, y) && !(x == nave.getX() && y == nave.getY())) {
-                return new int[] { x, y };
+                return new int[]{x, y};
             }
         }
         throw new IllegalStateException("O mapa nao possui posicoes livres suficientes");

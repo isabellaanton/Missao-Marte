@@ -2,7 +2,9 @@ package exercicio10;
 
 import exercicio10.model.*;
 import exercicio10.presentation.MapaView;
+import exercicio10.repository.RankingJsonRepository;
 import exercicio10.service.PassageiroFactory;
+import exercicio10.repository.RankingRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +32,8 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
-        List<RankingEntry> ranking = RankingRepository.carregar();
+        RankingRepository repositorio = new RankingJsonRepository();
+        List<RankingEntry> ranking = repositorio.carregar();
 
         exibirBoasVindas();
 
