@@ -2,6 +2,7 @@ package exercicio10;
 
 import exercicio10.model.*;
 import exercicio10.presentation.MapaView;
+import exercicio10.service.PassageiroFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -41,7 +42,7 @@ public class Main {
                 case "1":
                     jogarPartida(scanner, random, ranking);
                     // Atualiza a lista em memória após jogar
-                    ranking = loadRanking(RANKING_PATH);
+                    ranking = RankingRepository.carregar();
                     break;
                 case "2":
                     exibirRankingCompleto(ranking);
@@ -119,7 +120,7 @@ public class Main {
                 partidaAtiva = false;
                 break;
             } else if (cmd == 'c') {
-                Passageiro p = missao.passagemNaPosicao();
+                Passageiro p = missao.getPassageiroNaPosicaoDaNave();
                 if (p == null) {
                     System.out.println("Nenhum passageiro nesta posição.");
                 } else {
@@ -142,7 +143,7 @@ public class Main {
             }
 
             // Mover inimigos no mapa
-            missao.moverInimigos(random, minX, maxX, minY, maxY);
+            missao.moverInimigos(random, minX, maxX);
 
             // Verificar colisões
             if (missao.verificaColisao()) {
@@ -264,7 +265,7 @@ public class Main {
             if (posicaoOcupada(missao, x, y)) continue;
 
             int index = missao.getPassageiros().size();
-            missao.addPassageiro(criarPassageiroPolimorfico(index, x, y));
+            missao.adicionarPassageiro(PassageiroFactory.criar(index, x, y));
         }
 
         // Adicionar asteroides aleatórios
@@ -274,7 +275,7 @@ public class Main {
             if (x == nave.getX() && y == nave.getY()) continue;
             if (posicaoOcupada(missao, x, y)) continue;
 
-            missao.addAsteroide(new Asteroide(x, y));
+            missao.adicionarAsteroide(new Asteroide(x, y));
         }
 
         // Adicionar inimigos aleatórios
@@ -284,20 +285,10 @@ public class Main {
             if (x == nave.getX() && y == nave.getY()) continue;
             if (posicaoOcupada(missao, x, y)) continue;
 
-            missao.addInimigo(new Inimigo(x, y));
+            missao.adicionarInimigo(new Inimigo(x, y));
         }
 
         return missao;
-    }
-
-    private static Passageiro criarPassageiroPolimorfico(int indice, int x, int y) {
-        switch (indice % 5) {
-            case 0: return new Professor("Dr. Silva", x, y);
-            case 1: return new Engenheiro("Eng. Rosa", x, y);
-            case 2: return new Professor("Dr. Lima", x, y);
-            case 3: return new Engenheiro("Eng. Carlos", x, y);
-            default: return new Astronauta("Ast. Maria", x, y);
-        }
     }
 
     private static boolean posicaoOcupada(Missao missao, int x, int y) {
@@ -340,23 +331,23 @@ public class Main {
     }
 
 
+    private static List<RankingEntry> resetarRanking(Scanner scanner) {
+        System.out.print("Você realmente deseja limpar o histórico de ranking? (s/n): ");
+        String confirmacao = lerLinha(scanner, "", "n").toLowerCase();
+        if (confirmacao.equals("s") || confirmacao.equals("sim")) {
+            RankingRepository.resetar();
+            System.out.println("Ranking resetado com sucesso!");
+            return new ArrayList<>();
+        }
+        System.out.println("Operação cancelada.");
+        return RankingRepository.carregar();
+    }
+    // -------------------------------------------------
+
     private static boolean isTopScore(List<RankingEntry> ranking, int score) {
         if (ranking.size() < 5) {
             return true;
         }
         return score > ranking.get(ranking.size() - 1).score;
     }
-
-    private static List<RankingEntry> loadRanking(Path path) {
-        if (!Files.exists(path)) {
-            return new ArrayList<>();
-        }
-        try {
-            String json = new String(Files.readAllBytes(path), StandardCharsets.UTF_8).trim();
-            return parseRankingJson(json);
-        } catch (IOException e) {
-            return new ArrayList<>();
-        }
-    }
-
 }

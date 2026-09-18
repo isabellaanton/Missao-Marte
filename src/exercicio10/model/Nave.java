@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class Nave extends EntidadeMapa implements Movel {
+public final class Nave extends EntidadeMapa implements Movel implements Posicionavel {
     private final String nome;
     private final int capacidade;
     private final List<Passageiro> passageiros = new ArrayList<Passageiro>();
