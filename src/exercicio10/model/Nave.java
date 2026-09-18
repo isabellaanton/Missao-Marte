@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class Nave extends EntidadeMapa implements Movel implements Posicionavel {
-    private final String nome;
+public final class Nave extends EntidadeMapa implements Movel, Posicionavel {    private final String nome;
     private final int capacidade;
     private final List<Passageiro> passageiros = new ArrayList<Passageiro>();
     private int vidas = 3;
 
-    public Nave(String nome, int x, int y, int capacidade) {
+    public Nave(String nome, int x) {
         super(x, y);
         this.nome = nome;
         this.capacidade = capacidade;

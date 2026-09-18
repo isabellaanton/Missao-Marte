@@ -6,11 +6,6 @@ import exercicio10.repository.RankingJsonRepository;
 import exercicio10.service.PassageiroFactory;
 import exercicio10.repository.RankingRepository;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -43,15 +38,15 @@ public class Main {
             String opcao = lerLinha(scanner, "Escolha uma opção: ", "1");
             switch (opcao) {
                 case "1":
-                    jogarPartida(scanner, random, ranking);
+                    jogarPartida(scanner, random, ranking, repositorio);
                     // Atualiza a lista em memória após jogar
-                    ranking = RankingRepository.carregar();
+                    ranking = repositorio.carregar();
                     break;
                 case "2":
                     exibirRankingCompleto(ranking);
                     break;
                 case "3":
-                    ranking = resetarRanking(scanner);
+                    ranking = resetarRanking(scanner, repositorio);
                     break;
                 case "4":
                     rodando = false;
@@ -81,7 +76,7 @@ public class Main {
         System.out.println("----------------------");
     }
 
-    private static void jogarPartida(Scanner scanner, Random random, List<RankingEntry> ranking) {
+    private static void jogarPartida(Scanner scanner, Random random, List<RankingEntry> ranking, RankingRepository repositorio) {
         String pilotoNome = lerLinha(scanner, "\nDigite o nome do piloto: ", "Piloto Anônimo");
         if (pilotoNome.isEmpty()) {
             pilotoNome = "Piloto Anônimo";
@@ -137,7 +132,7 @@ public class Main {
                     }
                 }
             } else if (cmd == 'w' || cmd == 's' || cmd == 'a' || cmd == 'd') {
-                nave.moverComLimites(cmd, minX, maxX, minY, maxY);
+                nave.moverComLimites(cmd, minX, maxX);
                 score--;
                 movimentos++;
             } else {
@@ -191,7 +186,7 @@ public class Main {
                                 .sorted(Comparator.comparingInt((RankingEntry e) -> e.score).reversed())
                                 .limit(5)
                                 .collect(Collectors.toList());
-                        RankingRepository.salvar(rankingFiltrado);
+                        repositorio.salvar(rankingFiltrado);
                         System.out.println("Parabéns! Você entrou para o Top 5 de pilotos!");
                     }
                     partidaAtiva = false;
@@ -335,16 +330,16 @@ public class Main {
     }
 
 
-    private static List<RankingEntry> resetarRanking(Scanner scanner) {
+    private static List<RankingEntry> resetarRanking(Scanner scanner, RankingRepository repositorio) {
         System.out.print("Você realmente deseja limpar o histórico de ranking? (s/n): ");
         String confirmacao = lerLinha(scanner, "", "n").toLowerCase();
         if (confirmacao.equals("s") || confirmacao.equals("sim")) {
-            RankingRepository.resetar();
+            repositorio.resetar();
             System.out.println("Ranking resetado com sucesso!");
             return new ArrayList<>();
         }
         System.out.println("Operação cancelada.");
-        return RankingRepository.carregar();
+        return repositorio.carregar();
     }
     // -------------------------------------------------
 
