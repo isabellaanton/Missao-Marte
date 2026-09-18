@@ -292,15 +292,16 @@ public class Main {
     }
 
     private static boolean posicaoOcupada(Missao missao, int x, int y) {
-        if (missao.getNave().getX() == x && missao.getNave().getY() == y) return true;
-        for (Passageiro p : missao.getPassageiros()) {
-            if (p.getX() == x && p.getY() == y) return true;
-        }
-        for (Asteroide a : missao.getAsteroides()) {
-            if (a.getX() == x && a.getY() == y) return true;
-        }
-        for (Inimigo i : missao.getInimigos()) {
-            if (i.getX() == x && i.getY() == y) return true;
+        List<Posicionavel> entidades = new ArrayList<>();
+        entidades.add(missao.getNave());
+        entidades.addAll(missao.getPassageiros());
+        entidades.addAll(missao.getAsteroides());
+        entidades.addAll(missao.getInimigos());
+
+        for (Posicionavel entidade : entidades) {
+            if (entidade.getX() == x && entidade.getY() == y) {
+                return true;
+            }
         }
         return false;
     }
