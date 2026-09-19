@@ -1,104 +1,62 @@
-# Exercício 10: Desafio Final — Mini-jogo Completo
+# Revisão Crítica - Missão Marte (Princípios SOLID)
 
-## 📋 Enunciado
+### Princípio: Single Responsibility Principle (SRP)
+* **Local:** `exercicio10.presentation.MapaView` e `exercicio10.Main`
+* **Observação:** O código original misturava a lógica de controle da partida com a renderização visual do mapa no console.
+* **Impacto:** Dificultava a alteração do visual do jogo (ex: adicionar cores ANSI) sem correr o risco de quebrar o loop do jogo.
+* **Proposta:** Isolamento da renderização estritamente na classe `MapaView`, deixando o `Main` responsável apenas pelo fluxo do menu e orquestração.
+* **Prioridade:** Alta
 
-Com base no exercício 9, desenvolva a versão final do jogo "Missão Marte Unifor" agregando os seguintes requisitos avançados:
+### Princípio: Open/Closed Principle (OCP)
+* **Local:** `exercicio10.service.PassageiroFactory`
+* **Observação:** A instanciação direta de passageiros no construtor da Missão exigia modificação na classe principal toda vez que um novo tipo de passageiro fosse criado.
+* **Impacto:** Risco de regressão na regra de negócios central ao adicionar novos elementos ao jogo.
+* **Proposta:** Criação de uma Factory. Agora, o código está aberto para extensão (novas classes filhas de Passageiro) mas fechado para modificação no loop do jogo.
+* **Prioridade:** Média
 
-- **Menu inicial interativo** com opções de iniciar missão, visualizar o ranking, resetar histórico ou sair.
-- **Utilização de Enum** para representação dos níveis de dificuldade.
-- **Estatísticas de fim de partida** contendo o tempo total da missão (em segundos), movimentos efetuados e recorde atual.
-- **Reset do ranking** em tempo de execução.
-- **Refatoração da classe `Main`** em métodos especializados e menores para melhor legibilidade e organização do fluxo de jogo.
+### Princípio: Liskov Substitution Principle (LSP)
+* **Local:** `exercicio10.model.Passageiro` e suas subclasses (`Professor`, `Engenheiro`, `Astronauta`)
+* **Observação:** As subclasses substituem perfeitamente a classe base `Passageiro` dentro das coleções e lógicas da `Missao`.
+* **Impacto:** Garante que o método `embarcar()` da Nave funcione de forma polimórfica, sem precisar checar o tipo específico do passageiro com `instanceof` para a ação básica de resgate.
+* **Proposta:** Manter o contrato estrito, garantindo que toda nova profissão implemente `getPontuacao()` corretamente.
+* **Prioridade:** Alta
 
-## 🎯 Objetivo
+### Princípio: Interface Segregation Principle (ISP)
+* **Local:** `exercicio10.model.Movel` e `exercicio10.model.Posicionavel`
+* **Observação:** Originalmente, entidades estáticas (como Asteroides) poderiam ser forçadas a herdar métodos de movimentação.
+* **Impacto:** Classes implementando métodos vazios ou lançando exceções não suportadas, sujando o design.
+* **Proposta:** Segregação rigorosa. `Posicionavel` apenas exige X e Y. `Movel` exige `mover()`. Asteroides são apenas Posicionáveis, enquanto a Nave e Inimigos são Móveis.
+* **Prioridade:** Alta
 
-Consolidar o aprendizado dos pilares de Orientação a Objetos, demonstrando como estruturas de controle avançadas (como enums e modularização) tornam o código sustentável, além de prover uma interface de usuário de console mais completa e robusta.
+### Princípio: Dependency Inversion Principle (DIP)
+* **Local:** `exercicio10.Main` e `exercicio10.repository.RankingRepository`
+* **Observação:** O fluxo principal dependia diretamente da implementação concreta de salvamento em arquivo.
+* **Impacto:** Impossibilidade de trocar o sistema de salvamento (ex: para um Banco de Dados SQL) sem reescrever a classe `Main`.
+* **Proposta:** Injeção da interface `RankingRepository` no `Main`. O repositório concreto `RankingJsonRepository` é instanciado apenas uma vez e passado via parâmetro.
+* **Prioridade:** Alta
 
-## 🔧 Modificações Realizadas
+---
 
-### 1. Menu Principal Interativo
+### Melhoria Adicional
+* **Local:** `exercicio10.presentation.MapaView`
+* **Observação:** A interface do console em texto puro branco prejudica a UX (User Experience) e dificulta a rápida identificação de ameaças (Inimigos).
+* **Impacto:** Navegação confusa durante partidas em mapas grandes.
+* **Proposta:** Injeção de códigos de escape ANSI na renderização do terminal, mapeando cores específicas: Verde (Passageiros), Vermelho (Inimigos), Amarelo (Asteroides) e Azul (Nave).
+* **Prioridade:** Média
 
-Implementação de um loop de escolha no método `main` permitindo ao usuário navegar de forma clara:
+---
 
-```text
---- MENU PRINCIPAL ---
-1. Iniciar Nova Missão
-2. Visualizar Ranking Top 5
-3. Resetar Histórico de Ranking
-4. Sair do Jogo
-----------------------
-```
+### Decisão do Tutorial: Concordância
+* **Observação:** Concordo plenamente com a criação da camada `presentation` separada do `model`.
+* **Benefício:** A separação permite que o motor do jogo (`model` e `service`) rode de forma "headless" (sem interface gráfica). Isso possibilita rodar milhares de simulações para testes automatizados ou treinar uma IA sem o gargalo de imprimir texto no console a cada frame.
 
-### 2. Enum `Dificuldade` para Segurança de Tipos (Type-Safety)
+### Decisão do Tutorial: Discordância Técnica
+* **Observação:** Discordo da instrução de "criar uma versão refatorada em um pacote separado (`solidexercicio10`) mantendo o código inicial na mesma codebase".
+* **Justificativa:** Em um ambiente corporativo real, manter pacotes legados e pacotes refatorados convivendo no mesmo repositório gera poluição de namespace, confusão de importações na IDE (como presenciamos durante o desenvolvimento) e fere o princípio DRY (Don't Repeat Yourself). A abordagem profissional é refatorar o próprio pacote `exercicio10` e confiar no histórico do Git (commits antigos) para comparação de "Antes e Depois".
 
-Substituição das strings brutas por um tipo enumerado formal `Dificuldade` (com valores `FACIL`, `MEDIO`, `DIFICIL`) para lidar com as configurações do mapa e de pontuação de forma segura.
+---
 
-### 3. Computação de Estatísticas de Partida
-
-Cálculo da duração da missão comparando timestamps de início e fim da partida por meio de `System.currentTimeMillis()`. O resumo final exibe:
-
-- Pontuação final obtida.
-- Quantidade total de movimentos no grid marciano.
-- Duração da missão em segundos.
-- Feedback caso a pontuação seja o novo recorde absoluto.
-
-### 4. Resetar Ranking
-
-Criação de funcionalidade para deletar o arquivo persistido `ranking.json` do disco, limpando os registros locais instantaneamente.
-
-### 5. Separação de Concerns
-
-A classe `Main` foi limpa e modularizada em métodos menores:
-
-- `jogarPartida`: cuida do loop ativo de movimentos e ações dentro do mapa.
-- `exibirEstatisticas`: formata as métricas de tempo e pontuação.
-- `resetarRanking`: manipula a exclusão do arquivo JSON.
-- `criarNovaMissao` e `desenharMapa`: delegados para configuração e renderização.
-
-## 📁 Estrutura do Projeto
-
-```text
-src/exercicio10/
-├── Passageiro.java
-├── Professor.java
-├── Engenheiro.java
-├── Astronauta.java
-├── Nave.java
-├── Asteroide.java
-├── Inimigo.java
-├── Missao.java
-├── Dificuldade.java
-├── Main.java
-└── README.md
-```
-
-## 📚 Conceitos de OO Demonstrados
-
-✅ **Encapsulamento e Abstração** de estado de jogo e dados do piloto.
-✅ **Polimorfismo** no cálculo de pontuação dos diferentes passageiros (`getPontuacao`).
-✅ **Composição e Delegação** de responsabilidades entre as classes `Missao`, `Nave` e perigos.
-✅ **Enumerações (Enums)** para tipagem forte de dados.
-✅ **Modularidade** através da quebra do código procedural em funções estáticas coesas.
-
-## 🚀 Como Compilar e Executar
-
-### Compilação
-
-Execute a partir da pasta raiz do projeto `oo-console-completo`:
-
-```bash
-javac -d out src/exercicio10/*.java
-```
-
-### Execução
-
-```bash
-java -cp out exercicio10.Main
-```
-
-## ✅ Resultado Esperado
-
-- ✓ O jogo apresenta um menu inicial e aceita comandos numéricos estáveis.
-- ✓ O tempo total da missão é calculado e impresso com sucesso ao final.
-- ✓ A limpeza de ranking funciona removendo o arquivo persistido.
-- ✓ O compilador não gera avisos de erro de tipos de dificuldade.
+### Testes Realizados
+1. **Teste de Colisão:** Movimentação intencional da nave contra um asteroide. **Resultado:** Vida deduzida corretamente; jogo encerrado após 3 vidas perdidas.
+2. **Teste de Embarque (Limite):** Tentativa de embarcar 6 passageiros em uma nave com capacidade 5. **Resultado:** Rejeição do embarque excedente operando conforme o esperado.
+3. **Teste de Persistência DIP:** Salvamento do recorde, encerramento do console e reinício da aplicação. **Resultado:** Top 5 pilotos carregados corretamente da memória JSON persistida via interface.

@@ -1,0 +1,63 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam componentStyle uml2
+
+interface Posicionavel {
+  + getX(): int
+  + getY(): int
+}
+
+interface Movel extends Posicionavel {
+  + mover(dx: int, dy: int): void
+}
+
+abstract class EntidadeMapa implements Posicionavel {
+  # x: int
+  # y: int
+  + getX(): int
+  + getY(): int
+  + {abstract} getSimbolo(): char
+  + mover(dx: int, dy: int): void
+}
+
+class Nave extends EntidadeMapa implements Movel {
+  - nome: String
+  - capacidade: int
+  - vidas: int
+  + embarcar(p: Passageiro): boolean
+  + perderVida(): void
+  + moverComLimites(comando: char, min: int, max: int): boolean
+}
+
+abstract class Passageiro extends EntidadeMapa {
+  - nome: String
+  - tipo: String
+  + {abstract} getPontuacao(): int
+}
+
+class Professor extends Passageiro
+class Engenheiro extends Passageiro
+class Astronauta extends Passageiro
+
+class Asteroide extends EntidadeMapa
+class Inimigo extends EntidadeMapa implements Movel
+
+class Missao {
+  + adicionarPassageiro(p: Passageiro): void
+  + adicionarAsteroide(a: Asteroide): void
+  + adicionarInimigo(i: Inimigo): void
+  + verificaColisao(): boolean
+  + todosEmbarcados(): boolean
+}
+
+enum Dificuldade {
+  FACIL
+  MEDIO
+  DIFICIL
+}
+
+Missao "1" *-- "1" Nave
+Missao "1" *-- "0..*" Passageiro
+Missao "1" *-- "0..*" Asteroide
+Missao "1" *-- "0..*" Inimigo
+@enduml
