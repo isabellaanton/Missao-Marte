@@ -1,4 +1,4 @@
-﻿package exercicio10.model;
+package exercicio10.model;
 
 public final class Inimigo extends EntidadeMapa implements Posicionavel {
     public Inimigo(int x, int y) { super(x, y); }

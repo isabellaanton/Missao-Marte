@@ -1,4 +1,4 @@
-﻿package exercicio10.model;
+package exercicio10.model;
 
 public abstract class Passageiro extends EntidadeMapa implements Posicionavel {
     private final String nome;

@@ -238,7 +238,7 @@ public class Main {
     }
 
     private static Missao criarNovaMissao(Random random, int minX, int maxX, int minY, int maxY, Dificuldade dificuldade) {
-        Nave nave = new Nave("A-1", 5);
+        Nave nave = new Nave("A-1", 0, 0, 5);
         Missao missao = new Missao(nave);
 
         int qtdPassageiros = 5;

@@ -1,4 +1,4 @@
-﻿package exercicio10.model;
+package exercicio10.model;
 
 public final class Astronauta extends Passageiro {
     public Astronauta(String nome, int x, int y) { super(nome, "Astronauta", x, y); }

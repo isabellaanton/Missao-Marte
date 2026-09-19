@@ -1,4 +1,4 @@
-﻿package exercicio10.model;
+package exercicio10.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-﻿package exercicio10.model;
+package exercicio10.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,7 @@ public final class Nave extends EntidadeMapa implements Movel, Posicionavel {   
     private final List<Passageiro> passageiros = new ArrayList<Passageiro>();
     private int vidas = 3;
 
-    public Nave(String nome, int x) {
+    public Nave(String nome, int x, int y, int capacidade)  {
         super(x, y);
         this.nome = nome;
         this.capacidade = capacidade;
@@ -32,8 +32,8 @@ public final class Nave extends EntidadeMapa implements Movel, Posicionavel {   
         int dx = 0;
         int dy = 0;
         switch (Character.toLowerCase(comando)) {
-            case 'w': dy = 1; break;
-            case 's': dy = -1; break;
+            case 's': dy = 1; break;
+            case 'w': dy = -1; break;
             case 'a': dx = -1; break;
             case 'd': dx = 1; break;
             default: return false;

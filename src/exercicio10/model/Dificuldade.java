@@ -1,4 +1,4 @@
-﻿package exercicio10.model;
+package exercicio10.model;
 
 public enum Dificuldade {
     FACIL(30, 4, 1, 1),
