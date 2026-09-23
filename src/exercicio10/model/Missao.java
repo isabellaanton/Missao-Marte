@@ -1,4 +1,4 @@
-package exercicio10.model;
+package solidexercicio10.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,4 +48,3 @@ public final class Missao {
         return primeira.getX() == segunda.getX() && primeira.getY() == segunda.getY();
     }
 }
-
