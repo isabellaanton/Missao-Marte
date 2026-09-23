@@ -1,62 +1,76 @@
-# Revisão Crítica - Missão Marte (Princípios SOLID)
+# Missão Marte Unifor — Refatoração SOLID
 
-### Princípio: Single Responsibility Principle (SRP)
-* **Local:** `exercicio10.presentation.MapaView` e `exercicio10.Main`
-* **Observação:** O código original misturava a lógica de controle da partida com a renderização visual do mapa no console.
-* **Impacto:** Dificultava a alteração do visual do jogo (ex: adicionar cores ANSI) sem correr o risco de quebrar o loop do jogo.
-* **Proposta:** Isolamento da renderização estritamente na classe `MapaView`, deixando o `Main` responsável apenas pelo fluxo do menu e orquestração.
-* **Prioridade:** Alta
+## Integrantes
 
-### Princípio: Open/Closed Principle (OCP)
-* **Local:** `exercicio10.service.PassageiroFactory`
-* **Observação:** A instanciação direta de passageiros no construtor da Missão exigia modificação na classe principal toda vez que um novo tipo de passageiro fosse criado.
-* **Impacto:** Risco de regressão na regra de negócios central ao adicionar novos elementos ao jogo.
-* **Proposta:** Criação de uma Factory. Agora, o código está aberto para extensão (novas classes filhas de Passageiro) mas fechado para modificação no loop do jogo.
-* **Prioridade:** Média
+- Isabella Gaspar Anton — 2516267
+- Anderson Herculano de Lima — 2516855
 
-### Princípio: Liskov Substitution Principle (LSP)
-* **Local:** `exercicio10.model.Passageiro` e suas subclasses (`Professor`, `Engenheiro`, `Astronauta`)
-* **Observação:** As subclasses substituem perfeitamente a classe base `Passageiro` dentro das coleções e lógicas da `Missao`.
-* **Impacto:** Garante que o método `embarcar()` da Nave funcione de forma polimórfica, sem precisar checar o tipo específico do passageiro com `instanceof` para a ação básica de resgate.
-* **Proposta:** Manter o contrato estrito, garantindo que toda nova profissão implemente `getPontuacao()` corretamente.
-* **Prioridade:** Alta
+## Sobre o projeto
 
-### Princípio: Interface Segregation Principle (ISP)
-* **Local:** `exercicio10.model.Movel` e `exercicio10.model.Posicionavel`
-* **Observação:** Originalmente, entidades estáticas (como Asteroides) poderiam ser forçadas a herdar métodos de movimentação.
-* **Impacto:** Classes implementando métodos vazios ou lançando exceções não suportadas, sujando o design.
-* **Proposta:** Segregação rigorosa. `Posicionavel` apenas exige X e Y. `Movel` exige `mover()`. Asteroides são apenas Posicionáveis, enquanto a Nave e Inimigos são Móveis.
-* **Prioridade:** Alta
+Jogo de console em Java no qual o piloto conduz uma nave por Marte, resgata passageiros, evita perigos e tenta retornar à base. Esta versão reorganiza o jogo em responsabilidades menores, preservando o fluxo principal da missão.
 
-### Princípio: Dependency Inversion Principle (DIP)
-* **Local:** `exercicio10.Main` e `exercicio10.repository.RankingRepository`
-* **Observação:** O fluxo principal dependia diretamente da implementação concreta de salvamento em arquivo.
-* **Impacto:** Impossibilidade de trocar o sistema de salvamento (ex: para um Banco de Dados SQL) sem reescrever a classe `Main`.
-* **Proposta:** Injeção da interface `RankingRepository` no `Main`. O repositório concreto `RankingJsonRepository` é instanciado apenas uma vez e passado via parâmetro.
-* **Prioridade:** Alta
+## Requisitos
 
----
+- JDK instalado (Java 8 ou superior).
+- PowerShell ou terminal compatível com os comandos abaixo.
 
-### Melhoria Adicional
-* **Local:** `exercicio10.presentation.MapaView`
-* **Observação:** A interface do console em texto puro branco prejudica a UX (User Experience) e dificulta a rápida identificação de ameaças (Inimigos).
-* **Impacto:** Navegação confusa durante partidas em mapas grandes.
-* **Proposta:** Injeção de códigos de escape ANSI na renderização do terminal, mapeando cores específicas: Verde (Passageiros), Vermelho (Inimigos), Amarelo (Asteroides) e Azul (Nave).
-* **Prioridade:** Média
+## Compilar e executar
 
----
+Abra o terminal na pasta raiz do repositório e compile os fontes:
 
-### Decisão do Tutorial: Concordância
-* **Observação:** Concordo plenamente com a criação da camada `presentation` separada do `model`.
-* **Benefício:** A separação permite que o motor do jogo (`model` e `service`) rode de forma "headless" (sem interface gráfica). Isso possibilita rodar milhares de simulações para testes automatizados ou treinar uma IA sem o gargalo de imprimir texto no console a cada frame.
+```powershell
+javac -d out (Get-ChildItem -Recurse -Filter *.java -Path src | ForEach-Object FullName)
+```
 
-### Decisão do Tutorial: Discordância Técnica
-* **Observação:** Discordo da instrução de "criar uma versão refatorada em um pacote separado (`solidexercicio10`) mantendo o código inicial na mesma codebase".
-* **Justificativa:** Em um ambiente corporativo real, manter pacotes legados e pacotes refatorados convivendo no mesmo repositório gera poluição de namespace, confusão de importações na IDE (como presenciamos durante o desenvolvimento) e fere o princípio DRY (Don't Repeat Yourself). A abordagem profissional é refatorar o próprio pacote `exercicio10` e confiar no histórico do Git (commits antigos) para comparação de "Antes e Depois".
+Inicie o jogo:
 
----
+```powershell
+java -cp out solidexercicio10.Main
+```
 
-### Testes Realizados
-1. **Teste de Colisão:** Movimentação intencional da nave contra um asteroide. **Resultado:** Vida deduzida corretamente; jogo encerrado após 3 vidas perdidas.
-2. **Teste de Embarque (Limite):** Tentativa de embarcar 6 passageiros em uma nave com capacidade 5. **Resultado:** Rejeição do embarque excedente operando conforme o esperado.
-3. **Teste de Persistência DIP:** Salvamento do recorde, encerramento do console e reinício da aplicação. **Resultado:** Top 5 pilotos carregados corretamente da memória JSON persistida via interface.
+O jogo oferece opções para iniciar uma missão, consultar o ranking, resetá-lo e sair. Na missão, informe o nome do piloto, a dificuldade e o tamanho do mapa. Use `W`, `A`, `S` e `D` para mover a nave, `C` para embarcar um passageiro e `Q` para encerrar a missão.
+
+As pontuações de missões concluídas são persistidas no arquivo `ranking-solid-exercicio10.txt`, criado na pasta em que o jogo é executado.
+
+## Alterações realizadas
+
+- Separação do domínio em `src/solidexercicio10/model`.
+- Regras e fluxo do menu organizados em `src/solidexercicio10/service/JogoService.java`.
+- Renderização do mapa isolada em `src/solidexercicio10/presentation/MapaRenderer.java`.
+- Ranking separado em um contrato e uma implementação de arquivo, no pacote `repository`.
+- Inclusão dos diagramas UML e desta revisão da solução.
+- Remoção de um arquivo duplicado que impedia a compilação do pacote refatorado.
+
+## Decisões de projeto
+
+- `Main` monta as dependências e escolhe `RankingArquivoRepository`.
+- `JogoService` depende da abstração `RankingRepository`; assim, a implementação de persistência pode ser trocada sem colocar operações de arquivo nas regras do jogo.
+- A apresentação do mapa fica em `MapaRenderer`, separada das regras da missão.
+- `Professor`, `Engenheiro` e `Astronauta` herdam de `Passageiro` e definem sua própria pontuação e símbolo. O fluxo trabalha com a classe base.
+- `Posicionavel` e `Movel` são interfaces pequenas para capacidades diferentes.
+- Não foi criada uma interface para o renderer porque há apenas uma apresentação e não existe uma segunda implementação que justifique essa abstração.
+
+## Diagramas UML
+
+Os arquivos-fonte PlantUML e as imagens estão em [`docs/uml`](docs/uml/):
+
+- [Diagrama de classes do domínio (PNG)](docs/uml/diagrama-classes-model.png) e [fonte PlantUML](docs/uml/diagrama-classes-model.puml): apresenta as entidades, interfaces, heranças e associações de `model`.
+- [Diagrama de pacotes (PNG)](docs/uml/diagrama-pacotes.png) e [fonte PlantUML](docs/uml/diagrama-pacotes.puml): apresenta as camadas e mostra o serviço dependendo do contrato `RankingRepository`.
+
+## Testes e evidências
+
+Na revisão final, os fontes de `solidexercicio10` compilaram com JDK 24. Também foram verificados os seguintes fluxos:
+
+- início e conclusão de uma missão com embarque de passageiros, retorno à base, estatísticas e gravação no ranking;
+- consulta e reset do ranking pelo menu;
+- gravação, leitura e limpeza do repositório em arquivo temporário;
+- embarque no modelo e detecção de colisão com asteroide.
+
+Os resultados e as observações por princípio estão em [`REVISAO-SOLID.md`](REVISAO-SOLID.md).
+
+## Limitações conhecidas
+
+- A interface é de console e o ranking usa um arquivo texto simples.
+- `JogoService` ainda coordena menu, turno e criação/posicionamento das entidades; a geração da missão pode ser extraída se houver novas variações.
+- O movimento dos inimigos respeita os limites do mapa, mas ainda pode fazer inimigos se sobreporem a outras entidades.
+- O pacote original `src/exercicio10` não estava no material local recebido. Portanto, a versão inicial não foi preservada nem comparada nesta cópia; ela deve ser adicionada sem alterações para completar essa parte da atividade.
