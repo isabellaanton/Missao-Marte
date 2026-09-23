@@ -1,8 +1,7 @@
-package exercicio10.model;
+package solidexercicio10.model;
 
 public final class Astronauta extends Passageiro {
     public Astronauta(String nome, int x, int y) { super(nome, "Astronauta", x, y); }
     @Override public int getPontuacao() { return 10; }
     @Override public char getSimbolo() { return 'T'; }
 }
-
