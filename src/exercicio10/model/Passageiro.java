@@ -1,6 +1,6 @@
-package exercicio10.model;
+package solidexercicio10.model;
 
-public abstract class Passageiro extends EntidadeMapa implements Posicionavel {
+public abstract class Passageiro extends EntidadeMapa {
     private final String nome;
     private final String tipo;
 
@@ -14,4 +14,3 @@ public abstract class Passageiro extends EntidadeMapa implements Posicionavel {
     public String getTipo() { return tipo; }
     public abstract int getPontuacao();
 }
-
