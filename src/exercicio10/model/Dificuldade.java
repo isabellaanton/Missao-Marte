@@ -1,4 +1,4 @@
-package exercicio10.model;
+package solidexercicio10.model;
 
 public enum Dificuldade {
     FACIL(30, 4, 1, 1),
@@ -25,12 +25,11 @@ public enum Dificuldade {
     public static Dificuldade deString(String valor) {
         if (valor == null) return MEDIO;
         String normalizado = valor.trim().toUpperCase()
-                .replace("Ã", "A").replace("Ã‰", "E").replace("Ã", "I")
-                .replace("Ã“", "O").replace("Ãš", "U");
+                .replace("Á", "A").replace("É", "E").replace("Í", "I")
+                .replace("Ó", "O").replace("Ú", "U");
         for (Dificuldade dificuldade : values()) {
             if (dificuldade.name().equals(normalizado)) return dificuldade;
         }
         return MEDIO;
     }
 }
-
