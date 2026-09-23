@@ -56,6 +56,30 @@ Impacto para manutenção, testes ou evolução: o ponto variável de persistên
 Proposta: melhoria adicional: impedir que inimigos se sobreponham a passageiros, asteroides ou entre si depois de se moverem; atualmente somente os limites do mapa são verificados.  
 Prioridade: média.
 
+S — Responsabilidade única
+- model/Nave.java: representa a nave e suas ações, como movimento e vidas.
+- presentation/MapaRenderer.java: desenha o mapa. Não controla as regras da missão.
+- repository/RankingArquivoRepository.java: lê e grava o ranking em arquivo.
+- service/JogoService.java: coordena o menu e o fluxo da partida.
+
+O — Aberto/fechado
+- model/Passageiro.java é a classe base.
+- model/Professor.java, Engenheiro.java e Astronauta.java implementam variações de passageiro.
+
+L — Substituição de Liskov
+- Professor, Engenheiro e Astronauta herdam de Passageiro.
+- JogoService lida com passageiros usando a classe base, por exemplo, para obter pontuação e tipo.
+
+I — Segregação de interfaces
+- model/Posicionavel.java descreve a capacidade de ter posição.
+- model/Movel.java descreve a capacidade de se mover.
+- As classes implementam as capacidades de que precisam.
+
+D — Inversão de dependência
+- repository/RankingRepository.java define o contrato do ranking.
+- repository/RankingArquivoRepository.java implementa esse contrato usando arquivo.
+- Main.java escolhe e fornece a implementação ao JogoService.
+
 ## Testes realizados
 
 | Teste | Resultado esperado | Resultado |
