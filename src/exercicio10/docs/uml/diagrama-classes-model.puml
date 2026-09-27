@@ -1,0 +1,101 @@
+@startuml
+left to right direction
+skinparam monochrome true
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface Posicionavel {
+  +getX(): int
+  +getY(): int
+}
+
+interface Movel {
+  +mover(dx: int, dy: int): void
+}
+
+abstract class EntidadeMapa {
+  #x: int
+  #y: int
+  +getX(): int
+  +getY(): int
+  +getSimbolo(): char
+}
+
+abstract class Passageiro {
+  -nome: String
+  -tipo: String
+  +getNome(): String
+  +getTipo(): String
+  +getPontuacao(): int
+}
+
+class Professor {
+  +getPontuacao(): int
+  +getSimbolo(): char
+}
+
+class Engenheiro {
+  +getPontuacao(): int
+  +getSimbolo(): char
+}
+
+class Astronauta {
+  +getPontuacao(): int
+  +getSimbolo(): char
+}
+
+class Nave {
+  -nome: String
+  -capacidade: int
+  -vidas: int
+  -passageiros: List<Passageiro> [0..*]
+  +embarcar(passageiro): boolean
+  +perderVida(): void
+  +moverComLimites(comando, min, max): boolean
+}
+
+class Asteroide {
+  +getSimbolo(): char
+}
+
+class Inimigo {
+  +mover(dx: int, dy: int): void
+  +getSimbolo(): char
+}
+
+class Missao {
+  -nave: Nave [1]
+  -passageiros: List<Passageiro> [0..*]
+  -asteroides: List<Asteroide> [0..*]
+  -inimigos: List<Inimigo> [0..*]
+  +embarcarPassageiroNaPosicao(): boolean
+  +verificaColisao(): boolean
+  +moverInimigos(random: Random, min: int, max: int): void
+  +todosEmbarcados(): boolean
+}
+
+enum Dificuldade {
+  FACIL
+  MEDIO
+  DIFICIL
+}
+
+EntidadeMapa ..|> Posicionavel
+Passageiro --|> EntidadeMapa
+Nave --|> EntidadeMapa
+Asteroide --|> EntidadeMapa
+Inimigo --|> EntidadeMapa
+Professor --|> Passageiro
+Engenheiro --|> Passageiro
+Astronauta --|> Passageiro
+Nave ..|> Movel
+Inimigo ..|> Movel
+
+Nave "1" o-- "0..*" Passageiro : embarcados
+
+note right of Dificuldade
+  Define pontos iniciais e quantidades
+  de passageiros, asteroides e inimigos.
+end note
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+left to right direction
+skinparam monochrome true
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+package "solidexercicio10" {
+  class Main
+}
+
+package "solidexercicio10.service" as service {
+  class JogoService
+}
+
+package "solidexercicio10.model" as model {
+  class Missao
+  class Nave
+  abstract class Passageiro
+  class Asteroide
+  class Inimigo
+  enum Dificuldade
+}
+
+package "solidexercicio10.presentation" as presentation {
+  class MapaRenderer
+}
+
+package "solidexercicio10.repository" as repository {
+  interface RankingRepository
+  class RankingArquivoRepository
+  class RankingEntry
+}
+
+Main ..> service
+service ..> model
+service ..> presentation
+service ..> repository
+RankingArquivoRepository ..|> RankingRepository
+RankingArquivoRepository ..> RankingEntry
+RankingEntry ..> Dificuldade
+@enduml
