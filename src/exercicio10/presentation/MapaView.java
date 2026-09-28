@@ -1,6 +1,6 @@
-package exercicio10.presentation;
+package solidexercicio10.presentation;
 
-import exercicio10.model.*;
+import solidexercicio10.model.*;
 
 public class MapaView {
 
